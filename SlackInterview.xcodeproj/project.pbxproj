@@ -16,6 +16,7 @@
 		E68157581BEBD45E0038971E /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = E68157561BEBD45E0038971E /* LaunchScreen.xib */; };
 		E68157641BEBD45E0038971E /* SlackInterviewTests.m in Sources */ = {isa = PBXBuildFile; fileRef = E68157631BEBD45E0038971E /* SlackInterviewTests.m */; };
 		E681576E1BEBD4950038971E /* Requirements in Resources */ = {isa = PBXBuildFile; fileRef = E681576D1BEBD4950038971E /* Requirements */; };
+		E6CD9B5D1BEC0836008FA6B2 /* EmployeeTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E6CD9B5C1BEC0836008FA6B2 /* EmployeeTableViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -44,6 +45,8 @@
 		E68157621BEBD45E0038971E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		E68157631BEBD45E0038971E /* SlackInterviewTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SlackInterviewTests.m; sourceTree = "<group>"; };
 		E681576D1BEBD4950038971E /* Requirements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Requirements; sourceTree = "<group>"; };
+		E6CD9B5B1BEC0836008FA6B2 /* EmployeeTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EmployeeTableViewController.h; sourceTree = "<group>"; };
+		E6CD9B5C1BEC0836008FA6B2 /* EmployeeTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EmployeeTableViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -67,6 +70,8 @@
 		E68157381BEBD45E0038971E = {
 			isa = PBXGroup;
 			children = (
+				E6CD9B5B1BEC0836008FA6B2 /* EmployeeTableViewController.h */,
+				E6CD9B5C1BEC0836008FA6B2 /* EmployeeTableViewController.m */,
 				E68157431BEBD45E0038971E /* SlackInterview */,
 				E68157601BEBD45E0038971E /* SlackInterviewTests */,
 				E68157421BEBD45E0038971E /* Products */,
@@ -227,6 +232,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E6CD9B5D1BEC0836008FA6B2 /* EmployeeTableViewController.m in Sources */,
 				E681574A1BEBD45E0038971E /* AppDelegate.m in Sources */,
 				E68157471BEBD45E0038971E /* main.m in Sources */,
 				E68157501BEBD45E0038971E /* ViewController.m in Sources */,
@@ -429,6 +435,7 @@
 				E68157691BEBD45E0038971E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		E681576A1BEBD45E0038971E /* Build configuration list for PBXNativeTarget "SlackInterviewTests" */ = {
 			isa = XCConfigurationList;
@@ -437,6 +444,7 @@
 				E681576C1BEBD45E0038971E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 
