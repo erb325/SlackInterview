@@ -1,0 +1,31 @@
+You may use Objective-C or Swift, your preference.
+
+You should use some form of data persistence (up to you how you structure this). We use Core Data at Slack for persistence, but you're free to use whatever type of persistence tool / framework you prefer.
+
+The app should work offline from a fresh open (e.g. force close and opening the app in airplane mode should still work fine after one previous launch).
+
+We will review the app on iOS 9 only. Feel free to restrict the binary to iOS 9 only.
+
+Don't worry about provisioning, we'll use our own profile to deploy on one of our devices.
+
+Any technical details are up to you: whether to use UITableView or something else, using CocoaPods for dependencies (AFNetworking, etc) or using straight up NSURLSession.
+
+Any design details are also up to you.
+
+The app should look and feel like something you would be proud of.
+
+Instructions for completing the exercise
+
+1. Create a brand new iOS project
+
+2. Create an app that lists the members of a Slack team, and allows you to drill down to their individual profiles.
+
+3. On the individual profile page, you should show the person's picture, username, real name, and title. Other profile fields are optional.
+
+4. Send me an email with a zip file containing the repo when you've completed the exercise and we will review it as soon as possible.
+
+Use the following API method and the following API token to complete this task. We've created a team and added some members specifically for this exercise.
+
+Documentation: https://api.slack.com/methods/users.list
+
+API Token: xoxp-4698769766-4698769768-4898023905-7a1afa
