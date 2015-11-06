@@ -7,6 +7,7 @@
 //
 
 #import "EmployeeTableViewController.h"
+#import "AppDelegate.h"
 
 @interface EmployeeTableViewController ()
 
@@ -15,11 +16,15 @@
 @implementation EmployeeTableViewController{
     NSString *token;
     NSDictionary *employeeData;
+    AppDelegate *delegate;
+
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self getEmployeeInformation];
+    
+    delegate = [[UIApplication sharedApplication] delegate];
     
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
@@ -40,15 +45,46 @@
             NSLog(@"Data saved");
             NSError* error;
             employeeData = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:&error];
+            employeeData = [employeeData valueForKey:@"members"];
             [self saveData];
         }
         
     }];
 }
+
+- (NSManagedObjectContext *)managedObjectContext {
+    NSManagedObjectContext *context = nil;
+    if ([delegate performSelector:@selector(managedObjectContext)]) {
+        context = [delegate managedObjectContext];
+    }
+    return context;
+}
+
 -(void)saveData{
     NSLog(@"Data: %@", employeeData.description);
     
-    //insert core data text here 
+    [self deleteMeLater];
+    
+    NSManagedObjectContext *context = [self managedObjectContext];
+    
+    // Create a new managed object
+    NSManagedObject *newEmployee = [NSEntityDescription insertNewObjectForEntityForName:@"Employee" inManagedObjectContext:context];
+    // [newEmployee setValue:value forKey:@"name"];
+    
+    NSError *error = nil;
+    
+    // Save the object to persistent store
+    if (![context save:&error]) {
+        NSLog(@"Can't Save! %@ %@", error, [error localizedDescription]);
+    }
+    
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+-(void) deleteMeLater {
+    for (int i = 0; i < employeeData.count; i ++) {
+       // NSLog(@"Employee: %@", [employeeData ]);
+    }
 }
 
 - (void)didReceiveMemoryWarning {
