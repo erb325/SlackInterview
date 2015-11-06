@@ -17,6 +17,7 @@
     NSString *token;
     NSDictionary *employeeData;
     AppDelegate *delegate;
+    NSMutableArray *employeeArray;
 
 }
 
@@ -25,6 +26,7 @@
     [self getEmployeeInformation];
     
     delegate = [[UIApplication sharedApplication] delegate];
+    employeeArray = [NSMutableArray new];
     
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
@@ -45,7 +47,7 @@
             NSLog(@"Data saved");
             NSError* error;
             employeeData = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:&error];
-            employeeData = [employeeData valueForKey:@"members"];
+            employeeArray = [employeeData valueForKey:@"members"];
             [self saveData];
         }
         
@@ -60,16 +62,27 @@
     return context;
 }
 
--(void)saveData{
-    NSLog(@"Data: %@", employeeData.description);
-    
-    [self deleteMeLater];
+-(void)saveData {
+    NSLog(@"Data Dictionary: %@", employeeData.description);
     
     NSManagedObjectContext *context = [self managedObjectContext];
     
+    for (int i = 0 ; i < [employeeArray count]; i++) {
+        NSLog(@"Employee: %@", [[employeeArray objectAtIndex:i] description]);
+        
+    }
+    for (int i = 0 ; i < [employeeArray count]; i++) {
+        NSLog(@"Name: %@", [[employeeArray objectAtIndex:i] objectForKey:@"name"]);
+        
+    }
     // Create a new managed object
     NSManagedObject *newEmployee = [NSEntityDescription insertNewObjectForEntityForName:@"Employee" inManagedObjectContext:context];
     // [newEmployee setValue:value forKey:@"name"];
+    
+//    [employeeData enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
+//
+//        [newEmployee setValue:[key objectForKey:@"name"] forKey:@"username"];
+//    }];
     
     NSError *error = nil;
     
@@ -81,11 +94,7 @@
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
--(void) deleteMeLater {
-    for (int i = 0; i < employeeData.count; i ++) {
-       // NSLog(@"Employee: %@", [employeeData ]);
-    }
-}
+
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
