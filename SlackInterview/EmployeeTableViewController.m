@@ -19,7 +19,7 @@
     AppDelegate *delegate;
     NSMutableArray *employeeArray;
     NSManagedObjectContext *context;
-
+    NSArray *fetchedEmployees;
 
 }
 
@@ -32,7 +32,11 @@
     
     [self getEmployeeInformation];
     
-    NSArray *temp = [self fetchEmployees];
+    fetchedEmployees = [self fetchEmployees];
+    for (int i = 0 ; i <fetchedEmployees.count; i++) {
+        NSLog(@"%@", [NSString stringWithFormat:@"%@", [[fetchedEmployees objectAtIndex:i] valueForKey:@"username"]] );
+
+    }
 
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
@@ -50,7 +54,6 @@
     [NSURLConnection sendAsynchronousRequest:request queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
         
         if (connectionError == nil) {
-            NSLog(@"Data saved");
             NSError* error;
             employeeData = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:&error];
             employeeArray = [employeeData valueForKey:@"members"];
@@ -62,8 +65,6 @@
 
 
 -(void)saveData {
-    NSLog(@"Data Dictionary: %@", employeeData.description);
-    
     // Create a new managed object
     NSManagedObject *newEmployee = [NSEntityDescription insertNewObjectForEntityForName:@"Employee" inManagedObjectContext:context];
     for (int i = 0 ; i < [employeeArray count]; i++) {
@@ -97,7 +98,7 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     // Return the number of rows in the section.
-    return 0;
+    return [fetchedEmployees count];
 }
 
 -(NSArray *)fetchEmployees {
@@ -108,18 +109,21 @@
                                               inManagedObjectContext:context];
     [fetchRequest setEntity:entity];
     NSArray *fetchedObjects = [context executeFetchRequest:fetchRequest error:&error];
-    NSLog(@"FetchedObjectsArray: %@", fetchedObjects);
     return fetchedObjects;
 }
 
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"employeeResuableCell" forIndexPath:indexPath];
+    static NSString *MyIdentifier = @"MyIdentifier";
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:MyIdentifier];
     
-    // Configure the cell...
-   // NSArray *tableEmployee = [self fetchEmployees];
+    if (cell == nil) {
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:MyIdentifier];
+    }
     
-   // NSLog(@"EmployeeArrayFormat: %@", [tableEmployee description]);
+    cell.imageView.image = [UIImage imageNamed:[[fetchedEmployees objectAtIndex:indexPath.row] valueForKey:@"thumbnail"]];
+    cell.textLabel.text = [NSString stringWithFormat:@"%@", [[fetchedEmployees objectAtIndex:indexPath.row] valueForKey:@"username"]];
+    cell.detailTextLabel.text = [NSString stringWithFormat:@"%@", [[fetchedEmployees objectAtIndex:indexPath.row] valueForKey:@"title"]];
     
     return cell;
 }
