@@ -18,7 +18,6 @@
     NSDictionary *employeeData;
     AppDelegate *delegate;
     NSMutableArray *employeeArray;
-    NSManagedObjectContext *context;
     NSArray *fetchedEmployees;
 
 }
@@ -27,16 +26,11 @@
     [super viewDidLoad];
     
     delegate = [[UIApplication sharedApplication] delegate];
-    context = [delegate managedObjectContext];
     employeeArray = [NSMutableArray new];
     
     [self getEmployeeInformation];
     
     fetchedEmployees = [self fetchEmployees];
-    for (int i = 0 ; i <fetchedEmployees.count; i++) {
-        NSLog(@"%@", [NSString stringWithFormat:@"%@", [[fetchedEmployees objectAtIndex:i] valueForKey:@"username"]] );
-
-    }
 
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
@@ -66,22 +60,33 @@
 
 -(void)saveData {
     // Create a new managed object
-    NSManagedObject *newEmployee = [NSEntityDescription insertNewObjectForEntityForName:@"Employee" inManagedObjectContext:context];
+   
+    
+    NSLog(@"Employee Array  %@", employeeArray);
+
     for (int i = 0 ; i < [employeeArray count]; i++) {
+        NSManagedObjectContext *context = [delegate managedObjectContext];
+
+        NSManagedObject *newEmployee = [NSEntityDescription insertNewObjectForEntityForName:@"Employee" inManagedObjectContext:context];
+        NSError *error = nil;
         [newEmployee setValue:[[employeeArray objectAtIndex:i] objectForKey:@"name"] forKey:@"username"];
         [newEmployee setValue:[[employeeArray objectAtIndex:i] objectForKey:@"real_name"] forKey:@"realName"];
         [newEmployee setValue:[[[employeeArray objectAtIndex:i] objectForKey:@"profile"] objectForKey:@"title"] forKey:@"title"];
-        [newEmployee setValue:[[[employeeArray objectAtIndex:i] objectForKey:@"profile"]objectForKey:@"image_32"] forKey:@"thumbnail"];
         [newEmployee setValue:[[[employeeArray objectAtIndex:i] objectForKey:@"profile"] objectForKey:@"phone"] forKey:@"phone"];
         [newEmployee setValue:[[[employeeArray objectAtIndex:i] objectForKey:@"profile"]objectForKey:@"skype"] forKey:@"skype"];
+        
+        NSData *imageData = [[NSData alloc] initWithContentsOfURL:[NSURL URLWithString:[[[employeeArray objectAtIndex:i]
+                                                                                         objectForKey:@"profile"]objectForKey:@"image_72"]]];
+        [newEmployee setValue:imageData forKey:@"thumbnail"];
+
+        // Save the object to persistent store
+        if (![context save:&error]) {
+            NSLog(@"Can't Save! %@ %@", error, [error localizedDescription]);
+        }
     }
     
-    NSError *error = nil;
     
-    // Save the object to persistent store
-    if (![context save:&error]) {
-        NSLog(@"Can't Save! %@ %@", error, [error localizedDescription]);
-    }
+   
 }
 
 - (void)didReceiveMemoryWarning {
@@ -103,6 +108,8 @@
 
 -(NSArray *)fetchEmployees {
     NSError *error;
+    NSManagedObjectContext *context = [delegate managedObjectContext];
+
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
 
     NSEntityDescription *entity = [NSEntityDescription entityForName:@"Employee"
@@ -120,12 +127,18 @@
     if (cell == nil) {
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:MyIdentifier];
     }
-    
-    cell.imageView.image = [UIImage imageNamed:[[fetchedEmployees objectAtIndex:indexPath.row] valueForKey:@"thumbnail"]];
+    cell.accessoryType =  UITableViewCellAccessoryDisclosureIndicator;
+    cell.imageView.clipsToBounds = NO;
+    cell.imageView.image = [UIImage imageWithData:[[fetchedEmployees objectAtIndex:indexPath.row] valueForKey:@"thumbnail"]];
     cell.textLabel.text = [NSString stringWithFormat:@"%@", [[fetchedEmployees objectAtIndex:indexPath.row] valueForKey:@"username"]];
     cell.detailTextLabel.text = [NSString stringWithFormat:@"%@", [[fetchedEmployees objectAtIndex:indexPath.row] valueForKey:@"title"]];
     
     return cell;
+}
+
+-(void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+    
+    
 }
 
 

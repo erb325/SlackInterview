@@ -15,8 +15,7 @@
 		E68157551BEBD45E0038971E /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E68157541BEBD45E0038971E /* Images.xcassets */; };
 		E68157581BEBD45E0038971E /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = E68157561BEBD45E0038971E /* LaunchScreen.xib */; };
 		E68157641BEBD45E0038971E /* SlackInterviewTests.m in Sources */ = {isa = PBXBuildFile; fileRef = E68157631BEBD45E0038971E /* SlackInterviewTests.m */; };
-		E681576E1BEBD4950038971E /* Requirements in Resources */ = {isa = PBXBuildFile; fileRef = E681576D1BEBD4950038971E /* Requirements */; };
-		E6CD9B5D1BEC0836008FA6B2 /* EmployeeTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E6CD9B5C1BEC0836008FA6B2 /* EmployeeTableViewController.m */; };
+		E6F1F78C1BEE99F600414E5D /* EmployeeTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E6F1F78A1BEE99F600414E5D /* EmployeeTableViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -44,9 +43,8 @@
 		E681575D1BEBD45E0038971E /* SlackInterviewTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SlackInterviewTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		E68157621BEBD45E0038971E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		E68157631BEBD45E0038971E /* SlackInterviewTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SlackInterviewTests.m; sourceTree = "<group>"; };
-		E681576D1BEBD4950038971E /* Requirements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Requirements; sourceTree = "<group>"; };
-		E6CD9B5B1BEC0836008FA6B2 /* EmployeeTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EmployeeTableViewController.h; sourceTree = "<group>"; };
-		E6CD9B5C1BEC0836008FA6B2 /* EmployeeTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EmployeeTableViewController.m; sourceTree = "<group>"; };
+		E6F1F78A1BEE99F600414E5D /* EmployeeTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EmployeeTableViewController.m; sourceTree = "<group>"; };
+		E6F1F78B1BEE99F600414E5D /* EmployeeTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EmployeeTableViewController.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -70,8 +68,6 @@
 		E68157381BEBD45E0038971E = {
 			isa = PBXGroup;
 			children = (
-				E6CD9B5B1BEC0836008FA6B2 /* EmployeeTableViewController.h */,
-				E6CD9B5C1BEC0836008FA6B2 /* EmployeeTableViewController.m */,
 				E68157431BEBD45E0038971E /* SlackInterview */,
 				E68157601BEBD45E0038971E /* SlackInterviewTests */,
 				E68157421BEBD45E0038971E /* Products */,
@@ -90,6 +86,8 @@
 		E68157431BEBD45E0038971E /* SlackInterview */ = {
 			isa = PBXGroup;
 			children = (
+				E6F1F78A1BEE99F600414E5D /* EmployeeTableViewController.m */,
+				E6F1F78B1BEE99F600414E5D /* EmployeeTableViewController.h */,
 				E68157481BEBD45E0038971E /* AppDelegate.h */,
 				E68157491BEBD45E0038971E /* AppDelegate.m */,
 				E681574E1BEBD45E0038971E /* ViewController.h */,
@@ -99,7 +97,6 @@
 				E68157561BEBD45E0038971E /* LaunchScreen.xib */,
 				E681574B1BEBD45E0038971E /* SlackInterview.xcdatamodeld */,
 				E68157441BEBD45E0038971E /* Supporting Files */,
-				E681576D1BEBD4950038971E /* Requirements */,
 			);
 			path = SlackInterview;
 			sourceTree = "<group>";
@@ -211,7 +208,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E681576E1BEBD4950038971E /* Requirements in Resources */,
 				E68157531BEBD45E0038971E /* Main.storyboard in Resources */,
 				E68157581BEBD45E0038971E /* LaunchScreen.xib in Resources */,
 				E68157551BEBD45E0038971E /* Images.xcassets in Resources */,
@@ -232,11 +228,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E6CD9B5D1BEC0836008FA6B2 /* EmployeeTableViewController.m in Sources */,
 				E681574A1BEBD45E0038971E /* AppDelegate.m in Sources */,
 				E68157471BEBD45E0038971E /* main.m in Sources */,
 				E68157501BEBD45E0038971E /* ViewController.m in Sources */,
 				E681574D1BEBD45E0038971E /* SlackInterview.xcdatamodeld in Sources */,
+				E6F1F78C1BEE99F600414E5D /* EmployeeTableViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
