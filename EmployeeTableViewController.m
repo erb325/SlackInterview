@@ -18,16 +18,22 @@
     NSDictionary *employeeData;
     AppDelegate *delegate;
     NSMutableArray *employeeArray;
+    NSManagedObjectContext *context;
+
 
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    [self getEmployeeInformation];
     
     delegate = [[UIApplication sharedApplication] delegate];
+    context = [delegate managedObjectContext];
     employeeArray = [NSMutableArray new];
     
+    [self getEmployeeInformation];
+    
+    NSArray *temp = [self fetchEmployees];
+
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
     
@@ -54,35 +60,20 @@
     }];
 }
 
-- (NSManagedObjectContext *)managedObjectContext {
-    NSManagedObjectContext *context = nil;
-    if ([delegate performSelector:@selector(managedObjectContext)]) {
-        context = [delegate managedObjectContext];
-    }
-    return context;
-}
 
 -(void)saveData {
     NSLog(@"Data Dictionary: %@", employeeData.description);
     
-    NSManagedObjectContext *context = [self managedObjectContext];
-    
-    for (int i = 0 ; i < [employeeArray count]; i++) {
-        NSLog(@"Employee: %@", [[employeeArray objectAtIndex:i] description]);
-        
-    }
-    for (int i = 0 ; i < [employeeArray count]; i++) {
-        NSLog(@"Name: %@", [[employeeArray objectAtIndex:i] objectForKey:@"name"]);
-        
-    }
     // Create a new managed object
     NSManagedObject *newEmployee = [NSEntityDescription insertNewObjectForEntityForName:@"Employee" inManagedObjectContext:context];
-    // [newEmployee setValue:value forKey:@"name"];
-    
-//    [employeeData enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
-//
-//        [newEmployee setValue:[key objectForKey:@"name"] forKey:@"username"];
-//    }];
+    for (int i = 0 ; i < [employeeArray count]; i++) {
+        [newEmployee setValue:[[employeeArray objectAtIndex:i] objectForKey:@"name"] forKey:@"username"];
+        [newEmployee setValue:[[employeeArray objectAtIndex:i] objectForKey:@"real_name"] forKey:@"realName"];
+        [newEmployee setValue:[[[employeeArray objectAtIndex:i] objectForKey:@"profile"] objectForKey:@"title"] forKey:@"title"];
+        [newEmployee setValue:[[[employeeArray objectAtIndex:i] objectForKey:@"profile"]objectForKey:@"image_32"] forKey:@"thumbnail"];
+        [newEmployee setValue:[[[employeeArray objectAtIndex:i] objectForKey:@"profile"] objectForKey:@"phone"] forKey:@"phone"];
+        [newEmployee setValue:[[[employeeArray objectAtIndex:i] objectForKey:@"profile"]objectForKey:@"skype"] forKey:@"skype"];
+    }
     
     NSError *error = nil;
     
@@ -90,11 +81,7 @@
     if (![context save:&error]) {
         NSLog(@"Can't Save! %@ %@", error, [error localizedDescription]);
     }
-    
-    [self dismissViewControllerAnimated:YES completion:nil];
 }
-
-
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
@@ -104,26 +91,39 @@
 #pragma mark - Table view data source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-#warning Potentially incomplete method implementation.
     // Return the number of sections.
-    return 0;
+    return 1;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-#warning Incomplete method implementation.
     // Return the number of rows in the section.
     return 0;
 }
 
-/*
+-(NSArray *)fetchEmployees {
+    NSError *error;
+    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+
+    NSEntityDescription *entity = [NSEntityDescription entityForName:@"Employee"
+                                              inManagedObjectContext:context];
+    [fetchRequest setEntity:entity];
+    NSArray *fetchedObjects = [context executeFetchRequest:fetchRequest error:&error];
+    NSLog(@"FetchedObjectsArray: %@", fetchedObjects);
+    return fetchedObjects;
+}
+
+
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:<#@"reuseIdentifier"#> forIndexPath:indexPath];
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"employeeResuableCell" forIndexPath:indexPath];
     
     // Configure the cell...
+   // NSArray *tableEmployee = [self fetchEmployees];
+    
+   // NSLog(@"EmployeeArrayFormat: %@", [tableEmployee description]);
     
     return cell;
 }
-*/
+
 
 /*
 // Override to support conditional editing of the table view.
