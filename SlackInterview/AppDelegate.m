@@ -12,15 +12,87 @@
 
 @end
 
-@implementation AppDelegate
+@implementation AppDelegate{
+    NSDictionary *employeeData;
+    AppDelegate *delegate;
+    NSMutableArray *employeeArray;
+}
+
+-(BOOL) application:(UIApplication *)application willFinishLaunchingWithOptions:(NSDictionary *)launchOptions{
+    delegate = [[UIApplication sharedApplication] delegate];
+    employeeArray = [NSMutableArray new];
+    
+    [self getEmployeeInformation];
+    return YES;
+}
 
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
+   
     return YES;
     
     
 }
+
+-(void)getEmployeeInformation {
+    NSString *requestURL = @"https://slack.com/api/users.list?token=xoxp-4698769766-4698769768-4898023905-7a1afa";
+    
+    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:requestURL]];
+    
+    [NSURLConnection sendAsynchronousRequest:request queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
+        
+        if (connectionError == nil) {
+            NSError* error;
+            employeeData = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:&error];
+            employeeArray = [employeeData valueForKey:@"members"];
+            [self saveData];
+        }
+        
+    }];
+    
+}
+
+
+-(void)saveData {
+    // Create a new managed object
+   
+    for (int i = 0 ; i < [employeeArray count]; i++) {
+        NSManagedObjectContext *context = [delegate managedObjectContext];
+        NSError *error = nil;
+        
+        
+        NSFetchRequest * fetchRequest = [[NSFetchRequest alloc] init];
+        fetchRequest.entity = [NSEntityDescription entityForName:@"Employee" inManagedObjectContext:context];
+        
+        [fetchRequest setFetchLimit:1];
+        
+        NSString *checkName = [NSString stringWithFormat:@"%@", [[employeeArray objectAtIndex:i] objectForKey:@"real_name"]];
+        [fetchRequest setPredicate:[NSPredicate predicateWithFormat:@"realName == %@", checkName]];
+        
+        NSUInteger count = [context countForFetchRequest:fetchRequest error:&error];
+        
+        if (count == 0){
+            NSManagedObject *newEmployee = [NSEntityDescription insertNewObjectForEntityForName:@"Employee" inManagedObjectContext:context];
+            [newEmployee setValue:[[employeeArray objectAtIndex:i] objectForKey:@"name"] forKey:@"username"];
+            [newEmployee setValue:[[employeeArray objectAtIndex:i] objectForKey:@"real_name"] forKey:@"realName"];
+            [newEmployee setValue:[[[employeeArray objectAtIndex:i] objectForKey:@"profile"] objectForKey:@"title"] forKey:@"title"];
+            [newEmployee setValue:[[[employeeArray objectAtIndex:i] objectForKey:@"profile"] objectForKey:@"phone"] forKey:@"phone"];
+            [newEmployee setValue:[[[employeeArray objectAtIndex:i] objectForKey:@"profile"]objectForKey:@"skype"] forKey:@"skype"];
+            
+            NSData *imageData = [[NSData alloc] initWithContentsOfURL:[NSURL URLWithString:[[[employeeArray objectAtIndex:i]
+                                                                                             objectForKey:@"profile"]objectForKey:@"image_72"]]];
+            [newEmployee setValue:imageData forKey:@"thumbnail"];
+            
+            // Save the object to persistent store
+            if (![context save:&error]) {
+                NSLog(@"Can't Save! %@ %@", error, [error localizedDescription]);
+            }
+        }
+    }
+}
+
+
 
 - (void)applicationWillResignActive:(UIApplication *)application {
     // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.

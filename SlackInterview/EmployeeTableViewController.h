@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface EmployeeTableViewController : UITableViewController
+@interface EmployeeTableViewController : UITableViewController <UITableViewDataSource, UITableViewDelegate>
+
 
 @end

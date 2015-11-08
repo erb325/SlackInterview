@@ -8,6 +8,7 @@
 
 #import "EmployeeTableViewController.h"
 #import "AppDelegate.h"
+#import "ViewController.h"
 
 @interface EmployeeTableViewController ()
 
@@ -15,78 +16,29 @@
 
 @implementation EmployeeTableViewController{
     NSString *token;
-    NSDictionary *employeeData;
     AppDelegate *delegate;
-    NSMutableArray *employeeArray;
     NSArray *fetchedEmployees;
 
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
+
     delegate = [[UIApplication sharedApplication] delegate];
-    employeeArray = [NSMutableArray new];
-    
-    [self getEmployeeInformation];
-    
-    fetchedEmployees = [self fetchEmployees];
+
+    [self fetchEmployees];
+    self.refreshControl = [[UIRefreshControl alloc] init];
+    self.refreshControl.backgroundColor = [UIColor purpleColor];
+    self.refreshControl.tintColor = [UIColor whiteColor];
+    [self.refreshControl addTarget:self
+                            action:@selector(fetchEmployees)
+                  forControlEvents:UIControlEventValueChanged];
 
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
     
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
-    
-    
-}
--(void)getEmployeeInformation {
-    NSString *requestURL = @"https://slack.com/api/users.list?token=xoxp-4698769766-4698769768-4898023905-7a1afa";
-    
-    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:requestURL]];
-    
-    [NSURLConnection sendAsynchronousRequest:request queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
-        
-        if (connectionError == nil) {
-            NSError* error;
-            employeeData = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:&error];
-            employeeArray = [employeeData valueForKey:@"members"];
-            [self saveData];
-        }
-        
-    }];
-}
-
-
--(void)saveData {
-    // Create a new managed object
-   
-    
-    NSLog(@"Employee Array  %@", employeeArray);
-
-    for (int i = 0 ; i < [employeeArray count]; i++) {
-        NSManagedObjectContext *context = [delegate managedObjectContext];
-
-        NSManagedObject *newEmployee = [NSEntityDescription insertNewObjectForEntityForName:@"Employee" inManagedObjectContext:context];
-        NSError *error = nil;
-        [newEmployee setValue:[[employeeArray objectAtIndex:i] objectForKey:@"name"] forKey:@"username"];
-        [newEmployee setValue:[[employeeArray objectAtIndex:i] objectForKey:@"real_name"] forKey:@"realName"];
-        [newEmployee setValue:[[[employeeArray objectAtIndex:i] objectForKey:@"profile"] objectForKey:@"title"] forKey:@"title"];
-        [newEmployee setValue:[[[employeeArray objectAtIndex:i] objectForKey:@"profile"] objectForKey:@"phone"] forKey:@"phone"];
-        [newEmployee setValue:[[[employeeArray objectAtIndex:i] objectForKey:@"profile"]objectForKey:@"skype"] forKey:@"skype"];
-        
-        NSData *imageData = [[NSData alloc] initWithContentsOfURL:[NSURL URLWithString:[[[employeeArray objectAtIndex:i]
-                                                                                         objectForKey:@"profile"]objectForKey:@"image_72"]]];
-        [newEmployee setValue:imageData forKey:@"thumbnail"];
-
-        // Save the object to persistent store
-        if (![context save:&error]) {
-            NSLog(@"Can't Save! %@ %@", error, [error localizedDescription]);
-        }
-    }
-    
-    
-   
 }
 
 - (void)didReceiveMemoryWarning {
@@ -103,10 +55,13 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     // Return the number of rows in the section.
+    
     return [fetchedEmployees count];
 }
 
--(NSArray *)fetchEmployees {
+-(void)fetchEmployees {
+    [self.tableView reloadData];
+
     NSError *error;
     NSManagedObjectContext *context = [delegate managedObjectContext];
 
@@ -116,12 +71,15 @@
                                               inManagedObjectContext:context];
     [fetchRequest setEntity:entity];
     NSArray *fetchedObjects = [context executeFetchRequest:fetchRequest error:&error];
-    return fetchedObjects;
+    fetchedEmployees = fetchedObjects;
+    [self.tableView reloadData];
+    [self.refreshControl endRefreshing];
+
 }
 
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    static NSString *MyIdentifier = @"MyIdentifier";
+    static NSString *MyIdentifier = @"employeeResuableCell";
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:MyIdentifier];
     
     if (cell == nil) {
@@ -137,6 +95,16 @@
 }
 
 -(void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+    
+    ViewController *detailViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"detailViewController"];
+    
+    [detailViewController setName:[[fetchedEmployees objectAtIndex:indexPath.row] valueForKey:@"realName"]];
+    [detailViewController setProfile:[UIImage imageWithData:[[fetchedEmployees objectAtIndex:indexPath.row] valueForKey:@"thumbnail"]]];
+    [detailViewController setTitleString:[[fetchedEmployees objectAtIndex:indexPath.row] valueForKey:@"title"]];
+    [detailViewController setPhone:[[fetchedEmployees objectAtIndex:indexPath.row] valueForKey:@"phone"]];
+    [detailViewController setSkype:[[fetchedEmployees objectAtIndex:indexPath.row] valueForKey:@"skype"]];
+    
+    [self.navigationController pushViewController:detailViewController animated:YES];
     
     
 }
@@ -183,6 +151,7 @@
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     // Get the new view controller using [segue destinationViewController].
     // Pass the selected object to the new view controller.
+
 }
 */
 
