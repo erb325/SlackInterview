@@ -22,7 +22,8 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view, typically from a nib.
+    
+    // set the labels and textviews of the deatilViewController
     _nameLabel.text = nameString;
     _titleLabel.text = titleString;
     _phoneLabel.text = phoneString;
@@ -30,27 +31,32 @@
     _profileView.image = profileImage;
     
 }
--(void)viewDidAppear:(BOOL)animated{
-    
-}
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
+
+#pragma mark setter methods
+
 -(void) setName:(NSString *)text {
     nameString = text;
 }
+
 -(void)setTitleString:(NSString *)text{
     titleString = text;
 }
+
 -(void)setPhone:(NSString *)text{
     phoneString = text;
 }
+
 -(void)setSkype:(NSString *)text{
     skypeString = text;
 }
+
 -(void)setProfile:(UIImage *)image{
     profileImage = image;
 }
+
 @end

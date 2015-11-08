@@ -5,6 +5,9 @@
 //  Created by Ember Baker on 11/5/15.
 //  Copyright (c) 2015 Ember Baker. All rights reserved.
 //
+// EmployeeTableViewController :
+//      Load employees via core data and print to the table
+//
 
 #import "EmployeeTableViewController.h"
 #import "AppDelegate.h"
@@ -18,7 +21,6 @@
     NSString *token;
     AppDelegate *delegate;
     NSArray *fetchedEmployees;
-
 }
 
 - (void)viewDidLoad {
@@ -27,6 +29,8 @@
     delegate = [[UIApplication sharedApplication] delegate];
 
     [self fetchEmployees];
+    
+    //Refresh control to get latest data
     self.refreshControl = [[UIRefreshControl alloc] init];
     self.refreshControl.backgroundColor = [UIColor purpleColor];
     self.refreshControl.tintColor = [UIColor whiteColor];
@@ -59,6 +63,10 @@
     return [fetchedEmployees count];
 }
 
+/* fectchEmployees: get the employees from core data and save them to the fetched
+ * employees array. If this is a refresh, then relod data in the table and end 
+ * refresh
+ */
 -(void)fetchEmployees {
     [self.tableView reloadData];
 
@@ -74,9 +82,9 @@
     fetchedEmployees = fetchedObjects;
     [self.tableView reloadData];
     [self.refreshControl endRefreshing];
-
 }
 
+/* Fill the table cell with the name, image and title */
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     static NSString *MyIdentifier = @"employeeResuableCell";
@@ -94,6 +102,9 @@
     return cell;
 }
 
+/* When a cell is clicked go to a detail view. 
+ * save data for detailViewController first.
+ */
 -(void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     
     ViewController *detailViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"detailViewController"];
@@ -109,7 +120,7 @@
     
 }
 
-
+#pragma mark BoilerPlate TableMethods
 /*
 // Override to support conditional editing of the table view.
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {

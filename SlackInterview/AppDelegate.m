@@ -5,6 +5,7 @@
 //  Created by Ember Baker on 11/5/15.
 //  Copyright (c) 2015 Ember Baker. All rights reserved.
 //
+// set up core data, make api call and save to core data
 
 #import "AppDelegate.h"
 
@@ -34,7 +35,7 @@
     
     
 }
-
+/* Make the API call to get the employee list */
 -(void)getEmployeeInformation {
     NSString *requestURL = @"https://slack.com/api/users.list?token=xoxp-4698769766-4698769768-4898023905-7a1afa";
     
@@ -48,19 +49,15 @@
             employeeArray = [employeeData valueForKey:@"members"];
             [self saveData];
         }
-        
     }];
-    
 }
 
-
+/* Save the data recieved from the api call if the data does not already exist */
 -(void)saveData {
-    // Create a new managed object
    
     for (int i = 0 ; i < [employeeArray count]; i++) {
         NSManagedObjectContext *context = [delegate managedObjectContext];
         NSError *error = nil;
-        
         
         NSFetchRequest * fetchRequest = [[NSFetchRequest alloc] init];
         fetchRequest.entity = [NSEntityDescription entityForName:@"Employee" inManagedObjectContext:context];
@@ -84,7 +81,6 @@
                                                                                              objectForKey:@"profile"]objectForKey:@"image_72"]]];
             [newEmployee setValue:imageData forKey:@"thumbnail"];
             
-            // Save the object to persistent store
             if (![context save:&error]) {
                 NSLog(@"Can't Save! %@ %@", error, [error localizedDescription]);
             }
